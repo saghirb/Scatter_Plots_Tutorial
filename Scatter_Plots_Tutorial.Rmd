@@ -8,3 +8,212 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+# How to Make Stunning Scatter Plots in R: A Complete Guide with ggplot2
+
+# Intro
+
+Today you’ll learn how to create impressive scatter plots with R and the `ggplot2` package.
+
+This article demonstrates how to make a scatter plot for any occasion and how to make it look extraordinary at the same time. After reading, visualizing relationships between any continuous variables shouldn’t be a problem. Today you’ll learn how to:
+
+# Make Your First Scatter Plot
+
+R has many datasets built-in, and one of them is `mtcars`. It’s one of the most popular datasets, and today you’ll use it to make a lot of scatter plots. Package-wise, you’ll only need `ggplot2`. 
+
+Here’s how to import the packages and take a look at the first couple of rows:
+
+```{r import_packages}
+library(ggplot2)
+
+head(mtcars)
+```
+Image 1 – Head of MTCars dataset
+
+
+The most widely used R package for data visualization is `ggplot2`. It’s a straightforward package based on the layering principle. The first layer is used to specify the data, and the layers after are used to make and tweak the visualization.
+
+The `geom_point()` layer is used to draw scatter plots. Your first chart will show the relationship between the `mpg` attribute on the x-axis, and the `hp` column on the y-axis:
+
+```{r plot1}
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_point()
+```
+Image 2 – Relationship between MPG and HP variables
+
+
+We agree with you – it’s not the prettiest visualization. You’ll learn how to deal with that in the following sections.
+
+# Change Size, Color, Shape, and Theme
+
+You can’t make stunning visuals with default stylings. You can change a couple of things in the `geom_point()` layer, such as shape, color, size, and so on.
+
+Here’s how to make the points blue and a bit larger:
+
+```{r make_points_blue_and_larger}
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_point(size = 5, color = "#0099f9")
+```
+Image 3 – Changing size and color
+
+
+Better, but what if you don’t want to hardcode color and size values? You can put variable names instead. Here’s how to change the color based on the `cyl` variable and size by `qsec`:
+
+```{r change_color_with_variables_cyl_and_qsec}
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_point(aes(size = qsec, color = cyl))
+```
+Image 4 – Changing size and color by variables
+
+Changing shapes is also straightforward. Dots aren’t appropriate for every use case, and you’re free to change the shape with the `shape` attribute. You can find the list of all available shapes here (http://www.sthda.com/english/wiki/ggplot2-point-shapes)
+
+The following code snippet replaces dots with triangles:
+
+```{r replace_dots_with_triangles}
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_point(size = 5, color = "#0099f9", shape = 17)
+```
+
+Image 5 – Replacing dots with triangles
+
+
+And finally, let’s talk about themes. The default one isn’t for everyone because it’s a bit too harsh with the background. With R, you can change the theme with a single line of code:
+
+```{r changing_chart_theme}
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_point(size = 5, color = "#0099f9") + 
+  theme_classic()
+```
+Image 6 – Changing chart theme
+
+
+Now that’s progress. But it’s still not quite there yet. Let’s see how to add text and labels next.
+
+# Add Text and Labels
+
+You can use text and labels to add additional information to your visualizations. The only difference between these two is that there’s a box around labels, making it easier to read. 
+
+Here’s how to add text to represent car names:
+
+```{r add_text}
+library(ggrepel)
+
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_point(size = 5, color = "#0099f9") + 
+  geom_text_repel(label = rownames(mtcars),  size=3.5)
+
+```
+Image 7 – Adding text to the visualization
+
+The `ggrepel` package is here to prevent the overlap between text. You can add text with the plain `geom_text` layer, but it would be impossible to read the text for the points that are close. 
+
+If this still isn’t as readable as you would want, use labels instead of text. Here’s how:
+
+```{r Adding_labels_to_visualization}
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_point(size = 5, color = "#0099f9") + 
+  geom_label_repel(label = rownames(mtcars),  size=3.5)
+```
+Image 8 – Adding labels to the visualization
+
+
+Visualization isn’t complete without title and axis labels. Let’s see how to add and style these next.
+
+# Add Titles, Subtitles, Captions, and Axis Labels
+
+First, you’ll learn how to add titles, subtitles, and captions to the chart. The title is mandatory for any decent visualization, and the other two can help further clarify things and for citing sources, respectively.
+
+The most convenient way to add these is through a `labs()` layer. It takes in values for `title`, `subtitle`, and `caption`:
+
+```{r adding_title_subtitle_caption}
+
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_point(color = "#0099f9", size = 5) +
+  geom_point(aes(size = qsec, color = cyl)) +
+  labs(
+    title = "Miles per Gallon vs. Horse Power",
+    subtitle = "Color - Number of cylinders; Size - 1/4 mile time",
+    caption = "Source: MTCars dataset"
+  )
+```
+Image 9 – Adding title, subtitle, and caption
+
+
+By default, these don’t look so great. You can change color, size, alignment, and emphasize/italicize the text in the `theme()` layer. Here’s how:
+
+```{r styling title_subtitle_caption_with_theme}
+
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_point(color = "#0099f9", size = 5) +
+  geom_point(aes(size = qsec, color = cyl)) +
+  labs(
+    title = "Miles per Gallon vs. Horse Power",
+    subtitle = "Color - Number of cylinders; Size - 1/4 mile time",
+    caption = "Source: MTCars dataset"
+  ) + 
+  theme(
+    plot.title = element_text(color = "#0099f9", size = 20, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 13, face = "bold", hjust = 0.5),
+    plot.caption = element_text(face = "italic", hjust = 0)
+  )
+```
+
+Image 10 – Styling title, subtitle, and caption
+
+
+Let’s talk about axis labels next. You can change and style them the same you did with titles, subtitles, and captions – in `labs()` and `theme()` layers. 
+
+The code snippet below adds labels for both X and Y axes and styles them a bit:
+
+```{r adding_and_styling_axis_labels}
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_point(color = "#0099f9", size = 5) +
+  geom_point(aes(size = qsec, color = cyl)) +
+  labs(
+    x = "Miles per Gallon",
+    y = "Horse power"
+  ) +
+  theme(
+    axis.title.x = element_text(color = "#0099f9", size = 16, face = "bold"),
+    axis.title.y = element_text(color = "#0099f9", size = 16, face = "italic")
+  )
+```
+
+Image 11 – Adding and styling axis labels
+
+
+To wrap things up, let’s take a look at a couple of useful tweaks you can do to scatter plots that don’t fall into any of the discussed sections.
+
+# Add Other Useful Things
+
+Let’s start by changing the legend position. The default position on the right might not be the best for some use cases. You can put the legend on the top by adding the `legend.position` argument to the `theme()` layer and specifying the position.
+
+Here’s an example:
+
+```{r changing_legend_position}
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_point(aes(size = qsec, color = cyl)) +
+  theme(legend.position = "top")
+```
+Image 12 – Changing the legend position
+
+
+
+The other potentially useful layer you can use is `geom_rug()`. It shows the variable distribution on the edges of both X and Y axes for the specified variables.
+
+Here’s how to use it:
+
+```{r geom_rug}
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_point(size = 5, color = "#0099f9") + 
+  geom_rug()
+```
+
+With this layer, you can get a rough idea of how your variables are distributed and on which point(s) most of the observations are located.
+
+# Conclusion
+Today you’ve learned how to make scatter plots with R and ggplot2 and how to make them aesthetically pleasing. You’ve learned how to change colors, marker types, size, titles, subtitles, captions, axis labels, and a couple of other useful things.
+
+This alone will be enough to make almost any data visualization you can imagine. It’s up to you now to choose an appropriate theme, color, and title.
+
+You can expect more basic R tutorials weekly. Fill out the subscribe form below, so you never miss an update.
